@@ -21,7 +21,7 @@ const CustomButton = ({
   return (
     <button
       type={type}
-      className={`bg-slate-300 ${styles.button} ${className} disabled:bg-slate-200 disabled:text-muted-foreground disabled:pointer-events-none`}
+      className={`bg-secondary ${styles.button} ${className} disabled:pointer-events-none disabled:bg-secondary disabled:text-muted-foreground`}
       onClick={onClick}
       disabled={disabled}
     >
