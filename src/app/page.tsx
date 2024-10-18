@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ModeToggle from "~/components/shared/modeToggle";
 import { getServerAuthSession } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
@@ -12,7 +13,16 @@ export default async function Home() {
         <div>
           <p>{hello.greeting}</p>
           <p>{session?.user?.name}</p>
-          <p>{session?.expires}</p>
+          <p>{session?.user?.id}</p>
+          {session?.user && (
+            <Image
+              src={String(session?.user.image)}
+              alt="Avatar Image"
+              width={500}
+              height={500}
+              className="rounded-full"
+            />
+          )}
         </div>
         <ModeToggle />
       </main>

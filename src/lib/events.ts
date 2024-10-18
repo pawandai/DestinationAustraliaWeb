@@ -1,4 +1,3 @@
-// import va from "@vercel/analytics"
 import { z } from "zod";
 
 export const eventSchema = z.object({
@@ -16,17 +15,9 @@ export const eventSchema = z.object({
     "copy_chart_data",
     "copy_color",
   ]),
-  // declare type AllowedPropertyValues = string | number | boolean | null
   properties: z
     .record(z.union([z.string(), z.number(), z.boolean(), z.null()]))
     .optional(),
 });
 
 export type Event = z.infer<typeof eventSchema>;
-
-// export function trackEvent(input: Event): void {
-//   const event = eventSchema.parse(input)
-//   if (event) {
-//     va.track(event.name, event.properties)
-//   }
-// }

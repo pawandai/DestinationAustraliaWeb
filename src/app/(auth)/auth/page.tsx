@@ -1,13 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Footer from "~/components/shared/Footer";
 import FormBuilder from "~/components/shared/Form";
 import { Icons } from "~/components/shared/icons";
-import ModeToggle from "~/components/shared/modeToggle";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Form } from "~/components/ui/form";
@@ -99,8 +99,12 @@ const Signup = () => {
   const onLoginSubmit = (data: SignupFormSchemaType) => {
     console.log(data);
   };
+
   return (
     <Form {...form}>
+      <Button onClick={() => signOut().then(() => router.push("/"))}>
+        Logout
+      </Button>
       <form
         onSubmit={
           type === "login"
@@ -159,11 +163,11 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => signIn("github")}>
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                     Github
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => signIn("google")}>
                     <Icons.google className="mr-2 h-4 w-4" />
                     Google
                   </Button>
@@ -202,11 +206,11 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => signIn("github")}>
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                     Github
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => signIn("google")}>
                     <Icons.google className="mr-2 h-4 w-4" />
                     Google
                   </Button>

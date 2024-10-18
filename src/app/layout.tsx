@@ -39,12 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-// const manrope = Manrope({
-//   subsets: ["latin"],
-//   weight: ["200", "300", "400", "500", "600", "700"],
-// });
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
