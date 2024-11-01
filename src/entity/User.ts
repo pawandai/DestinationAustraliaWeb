@@ -1,16 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, Column, Index } from "typeorm";
+import BaseEntity from "./Base";
 
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number | undefined;
+@Entity("users")
+export class User extends BaseEntity {
+  // @Column()
+  // fullName!: string;
+
+  @Index("email_index")
+  @Column({
+    unique: true,
+  })
+  email!: string;
 
   @Column()
-  firstName: string | undefined;
+  password!: string;
 
-  @Column()
-  lastName: string | undefined;
+  @Column({
+    default: "startek.png",
+  })
+  photo!: string;
 
-  @Column()
-  age: number | undefined;
+  @Column({
+    default: false,
+  })
+  verified!: boolean;
+
+  // @OneToMany(() => Post, (post) => post.user)
+  // posts!: Post[];
 }

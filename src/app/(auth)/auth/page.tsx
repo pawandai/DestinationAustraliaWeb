@@ -10,9 +10,11 @@ import FormBuilder from "~/components/shared/Form";
 import { Icons } from "~/components/shared/icons";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Form } from "~/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Form } from "~/components/ui/form";
+import { api } from "~/trpc/react";
 import {
+  type LoginFormSchemaType,
   signupFormSchema,
   type SignupFormSchemaType,
 } from "~/validators/signupSchema";
@@ -21,6 +23,8 @@ const Signup = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const router = useRouter();
+  const { mutate: signUp } = api.auth.signup.useMutation();
+  const { mutate: login } = api.auth.login.useMutation();
 
   const LOGIN_FORM_DATA = [
     {
@@ -90,29 +94,32 @@ const Signup = () => {
       required: true,
     },
   ];
+
   const form = useForm<SignupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
   });
-  const onRegisterSubmit = (data: SignupFormSchemaType) => {
-    console.log(data);
+
+  const handleSigninWithProvider = async (provider: string) => {
+    try {
+      await signIn(provider, { redirect: true, callbackUrl: "/" });
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+    }
   };
-  const onLoginSubmit = (data: SignupFormSchemaType) => {
-    console.log(data);
+
+  const onRegisterSubmit = (data: SignupFormSchemaType) => {
+    signUp(data);
+  };
+  const onLoginSubmit = (data: LoginFormSchemaType) => {
+    login(data);
   };
 
   return (
     <Form {...form}>
-      <Button onClick={() => signOut().then(() => router.push("/"))}>
-        Logout
-      </Button>
-      <form
-        onSubmit={
-          type === "login"
-            ? form.handleSubmit(onLoginSubmit)
-            : form.handleSubmit(onRegisterSubmit)
-        }
-        className="mx-auto max-w-lg space-y-8 py-10"
-      >
+      <div className="mx-auto max-w-lg space-y-8 py-10">
+        <Button onClick={() => signOut().then(() => router.push("/"))}>
+          Logout
+        </Button>
         <Card className="overflow-hidden">
           <Tabs defaultValue={type ?? "register"}>
             <TabsList className="grid w-full grid-cols-2 rounded-none border-b">
@@ -143,15 +150,20 @@ const Signup = () => {
                 <CardTitle className="h3">Welcome Back</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4">
-                <FormBuilder formData={LOGIN_FORM_DATA} form={form} />
-                <Button
-                  className="w-full"
-                  variant="secondary"
-                  size="lg"
-                  type="submit"
+                <form
+                  onSubmit={form.handleSubmit(onLoginSubmit)}
+                  className="space-y-4"
                 >
-                  Log In
-                </Button>
+                  <FormBuilder formData={LOGIN_FORM_DATA} form={form} />
+                  <Button
+                    className="w-full"
+                    variant="secondary"
+                    size="lg"
+                    type="submit"
+                  >
+                    Log In
+                  </Button>
+                </form>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -163,11 +175,17 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-                  <Button variant="outline" onClick={() => signIn("github")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSigninWithProvider("github")}
+                  >
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                     Github
                   </Button>
-                  <Button variant="outline" onClick={() => signIn("google")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSigninWithProvider("google")}
+                  >
                     <Icons.google className="mr-2 h-4 w-4" />
                     Google
                   </Button>
@@ -186,15 +204,20 @@ const Signup = () => {
                 <CardTitle className="h3">Create an account</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4">
-                <FormBuilder formData={SIGNUP_FORM_DATA} form={form} />
-                <Button
-                  className="w-full"
-                  variant="secondary"
-                  size="lg"
-                  type="submit"
+                <form
+                  onSubmit={form.handleSubmit(onRegisterSubmit)}
+                  className="space-y-4"
                 >
-                  Create account
-                </Button>
+                  <FormBuilder formData={SIGNUP_FORM_DATA} form={form} />
+                  <Button
+                    className="w-full"
+                    variant="secondary"
+                    size="lg"
+                    type="submit"
+                  >
+                    Create account
+                  </Button>
+                </form>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -206,11 +229,17 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-                  <Button variant="outline" onClick={() => signIn("github")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSigninWithProvider("github")}
+                  >
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                     Github
                   </Button>
-                  <Button variant="outline" onClick={() => signIn("google")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSigninWithProvider("google")}
+                  >
                     <Icons.google className="mr-2 h-4 w-4" />
                     Google
                   </Button>
@@ -219,7 +248,7 @@ const Signup = () => {
             </TabsContent>
           </Tabs>
         </Card>
-      </form>
+      </div>
       <Footer />
     </Form>
   );

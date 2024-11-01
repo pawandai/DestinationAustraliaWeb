@@ -8,6 +8,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/providers";
 
 import "reflect-metadata";
+// import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        {/* <SessionProvider> */}
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
@@ -56,6 +58,7 @@ export default async function RootLayout({
             {children}
           </ThemeProvider>
         </TRPCReactProvider>
+        {/* </SessionProvider> */}
       </body>
     </html>
   );

@@ -1,8 +1,10 @@
-import { postRouter } from "~/server/api/routers/post";
-import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { authRouter } from "./routers/auth";
+import { postRouter } from "./routers/post";
+import { createCallerFactory, createTRPCRouter } from "../api/trpc";
 
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;
